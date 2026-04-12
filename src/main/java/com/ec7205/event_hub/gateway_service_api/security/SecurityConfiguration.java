@@ -1,4 +1,4 @@
-package com.cpd.hotel_system.gateway_service_api.security;
+package com.ec7205.event_hub.gateway_service_api.security;
 
 import java.util.List;
 

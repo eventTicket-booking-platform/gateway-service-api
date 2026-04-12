@@ -1,4 +1,4 @@
-package com.cpd.hotel_system.gateway_service_api;
+package com.ec7205.event_hub.gateway_service_api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
