@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -25,11 +26,11 @@ public class SecurityConfiguration {
         httpSecurity.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorize->
                         authorize
-                                .pathMatchers("/user-service/api/v1/**").permitAll()
-                                .pathMatchers("/hotel-management/api/v1/**").permitAll()
-                                .anyExchange()
-                                .authenticated())
-                .oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt);
+                                .pathMatchers("/user-service/api/v1/users/visitors/**").permitAll()
+                                .pathMatchers("/event-service/api/v1/events/**").permitAll()
+                                .pathMatchers(HttpMethod.GET, "/event-service/api/v1/categories/**").permitAll()
+                                .anyExchange().authenticated())
+                        .oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt);
 
         return httpSecurity.build();
     }
