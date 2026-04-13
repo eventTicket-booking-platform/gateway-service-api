@@ -26,9 +26,10 @@ public class SecurityConfiguration {
         httpSecurity.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorize->
                         authorize
-                                .pathMatchers("/user-service/api/v1/users/visitors/**").permitAll()
+                                .pathMatchers("/user-service/api/v1/**").permitAll()
                                 .pathMatchers("/event-service/api/v1/events/**").permitAll()
                                 .pathMatchers(HttpMethod.GET, "/event-service/api/v1/categories/**").permitAll()
+                                .pathMatchers("/notification-service/api/v1/**").permitAll()
                                 .anyExchange().authenticated())
                         .oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt);
 

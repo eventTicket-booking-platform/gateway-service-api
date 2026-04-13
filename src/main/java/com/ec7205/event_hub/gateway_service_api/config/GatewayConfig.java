@@ -19,6 +19,9 @@ public class GatewayConfig {
                 .route("booking-service-api",
                         r -> r.path("/booking-service/**")
                                 .uri("http://localhost:9093"))
+                .route("notification-service-api",
+                        r -> r.path("/notification-service/**")
+                                .uri("http://localhost:9094"))
                 .build();
     }
 }
