@@ -24,16 +24,20 @@ public class GatewayConfig {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("event-service-api",
-                        r -> r.path("/event-service/**")
+                        r -> r.path("/event-service/**", "/api/event-service/**")
+                                .filters(f -> f.rewritePath("/api/(?<segment>.*)", "/${segment}"))
                                 .uri(eventServiceUri))
                 .route("auth-service-api",
-                        r -> r.path("/user-service/**")
+                        r -> r.path("/user-service/**", "/api/user-service/**")
+                                .filters(f -> f.rewritePath("/api/(?<segment>.*)", "/${segment}"))
                                 .uri(authServiceUri))
                 .route("booking-service-api",
-                        r -> r.path("/booking-service/**")
+                        r -> r.path("/booking-service/**", "/api/booking-service/**")
+                                .filters(f -> f.rewritePath("/api/(?<segment>.*)", "/${segment}"))
                                 .uri(bookingServiceUri))
                 .route("notification-service-api",
-                        r -> r.path("/notification-service/**")
+                        r -> r.path("/notification-service/**", "/api/notification-service/**")
+                                .filters(f -> f.rewritePath("/api/(?<segment>.*)", "/${segment}"))
                                 .uri(notificationServiceUri))
                 .build();
     }
