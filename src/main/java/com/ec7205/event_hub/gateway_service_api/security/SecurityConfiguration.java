@@ -27,6 +27,22 @@ public class SecurityConfiguration {
                         authorize
                                 .pathMatchers("/").permitAll()
                                 .pathMatchers("/actuator/health", "/actuator/health/**").permitAll()
+                                // Inventory commands and internal counts are service-to-service,
+                                // never browser APIs (including for authenticated hosts).
+                                .pathMatchers("/event-service/api/v1/internal/**", "/api/event-service/api/v1/internal/**",
+                                        "/booking-service/api/v1/bookings/internal/**", "/api/booking-service/api/v1/bookings/internal/**")
+                                .denyAll()
+                                .pathMatchers("/notification-service/api/v1/admin/**", "/api/notification-service/api/v1/admin/**")
+                                .access((authentication, context) -> authentication.map(auth -> {
+                                    boolean admin = false;
+                                    if (auth.getPrincipal() instanceof org.springframework.security.oauth2.jwt.Jwt jwt) {
+                                        java.util.Map<String, Object> realm = jwt.getClaim("realm_access");
+                                        if (realm != null && realm.get("roles") instanceof java.util.Collection<?> roles) {
+                                            admin = roles.stream().anyMatch(role -> "admin".equalsIgnoreCase(String.valueOf(role)));
+                                        }
+                                    }
+                                    return new org.springframework.security.authorization.AuthorizationDecision(admin);
+                                }).defaultIfEmpty(new org.springframework.security.authorization.AuthorizationDecision(false)))
                                 .pathMatchers("/user-service/api/v1/**").permitAll()
                                 .pathMatchers("/api/user-service/api/v1/**").permitAll()
                                 .pathMatchers("/event-service/api/v1/**").permitAll()
