@@ -38,15 +38,20 @@ API gateway for Event Hub. This service fronts the backend APIs, exposes stable 
 
 ## Role-Based Access
 
-Current gateway security is permissive for all backend service API prefixes:
+Event, Booking and Auth services enforce their business authorization. The
+gateway permits their browser-facing API prefixes, with these explicit boundaries:
 
 - `/user-service/api/v1/**`
 - `/event-service/api/v1/**`
 - `/booking-service/api/v1/**`
-- `/notification-service/api/v1/**`
-- same paths under `/api/...`
+- notification administration requires an ADMIN realm role
+- Event Service internal APIs and Booking Service's internal count route are denied
+- the same rules apply under `/api/...`
 
-That means the gateway currently does not enforce RBAC on business endpoints. Authorization is delegated to downstream services, and for notification routes not even that exists yet.
+Event/Booking ownership remains enforced downstream; the gateway does not infer
+event ownership. Notification Service has no JWT middleware of its own, so its
+direct backend port must remain private. Other notification routes still rely
+on a trusted deployment boundary.
 
 ## Runtime Dependencies
 
@@ -84,4 +89,5 @@ Default port: `9090`
 ## Notes
 
 - Frontends in this project assume the gateway is reachable at `/api`.
-- If you want the gateway itself to own access control, tighten `SecurityConfiguration` instead of relying only on downstream services.
+- `SecurityConfiguration` enforces the gateway boundaries above; downstream
+  authorization remains authoritative for event ownership and booking access.
